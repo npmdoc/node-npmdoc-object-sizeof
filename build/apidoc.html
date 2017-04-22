@@ -51,7 +51,7 @@
 
         href="https://github.com/miktam/sizeof#readme"
 
-    >object-sizeof (v1.1.1)</a>
+    >object-sizeof (v1.2.0)</a>
 </h1>
 <h4>Sizeof of a JavaScript object in Bytes</h4>
 <div class="apidocSectionDiv"><a
@@ -61,12 +61,69 @@
 
     <li class="apidocModuleLi"><a href="#apidoc.module.object-sizeof">module object-sizeof</a><ol>
 
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.object-sizeof.object-sizeof">
+            function <span class="apidocSignatureSpan"></span>object-sizeof
+            <span class="apidocSignatureSpan">(object)</span>
+            </a>
+
+        </li>
+
     </ol></li>
 
 </ol></div>
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.object-sizeof" id="apidoc.module.object-sizeof">module object-sizeof</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.object-sizeof.object-sizeof" id="apidoc.element.object-sizeof.object-sizeof">
+        function <span class="apidocSignatureSpan"></span>object-sizeof
+        <span class="apidocSignatureSpan">(object)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function sizeof(object) {
+    if (object !== null &#x26;&#x26; typeof (object) === &#x27;object&#x27;) {
+      if (Buffer.isBuffer(object)) {
+        return object.length;
+      }
+      else {
+        var bytes = 0;
+        for (var key in object) {
+
+          if(!Object.hasOwnProperty.call(object, key)) {
+            continue;
+          }
+
+          bytes += sizeof(key);
+          try {
+            bytes += sizeof(object[key]);
+          } catch (ex) {
+            if(ex instanceof RangeError) {
+              // circular reference detected, final result might be incorrect
+              // let&#x27;s be nice and not throw an exception
+              bytes = 0;
+            }
+          }
+        }
+        return bytes;
+      }
+    } else if (typeof (object) === &#x27;string&#x27;) {
+      return object.length * ECMA_SIZES.STRING;
+    } else if (typeof (object) === &#x27;boolean&#x27;) {
+      return ECMA_SIZES.BOOLEAN;
+    } else if (typeof (object) === &#x27;number&#x27;) {
+      return ECMA_SIZES.NUMBER;
+    } else {
+      return 0;
+    }
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 </div>
 
